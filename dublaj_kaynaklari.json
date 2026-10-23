@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "autoSearch": true,
+  "providers": [
+    {
+      "id": "fullhdfilmizlesene",
+      "enabled": true,
+      "label": "Türkçe Dublaj",
+      "lang": "tr",
+      "base": "https://www.fullhdfilmizlesene.now",
+      "audioHeaders": {
+        "Origin": "{base}",
+        "Referer": "{base}/"
+      },
+      "movie": {
+        "queries": [
+          "{imdb}",
+          "{title}"
+        ]
+      },
+      "series": {
+        "queries": [
+          "{title} {season} Sezon {episode} Bölüm"
+        ]
+      },
+      "search": {
+        "url": "{base}/arama/{q}",
+        "maxCandidates": 3,
+        "pick": [
+          "<li[^>]*class=\"[^\"]*\\bfilm\\b[^\"]*\"[^>]*>(?:(?!</li>).)*?<a[^>]+href=\"([^\"]+)\"",
+          "href=\"((?:https://www\\.fullhdfilmizlesene\\.now)?/film/[^\"/]+/?)\""
+        ]
+      },
+      "steps": [
+        {
+          "op": "http_get",
+          "url": "{page}",
+          "referer": "{base}/",
+          "as": "html"
+        },
+        {
+          "op": "check",
+          "from": "html",
+          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
+          "expect": "durationMin",
+          "tolerance": 20
+        },
+        {
+          "op": "regex",
+          "from": "html",
+          "pattern": "scx\\s*=\\s*(\\{.*?\\})\\s*;",
+          "dotAll": true,
+          "group": 1,
+          "as": "scx"
+        },
+        {
+          "op": "json_path",
+          "from": "scx",
+          "path": "atom.sx.t[0]"
+        },
+        {
+          "op": "rot13"
+        },
+        {
+          "op": "base64",
+          "as": "player"
+        },
+        {
+          "op": "http_get",
+          "url": "{player}",
+          "referer": "{base}/",
+          "as": "playerHtml"
+        },
+        {
+          "op": "regex",
+          "from": "playerHtml",
+          "pattern": "_p8\\s*=\\s*['\"]([^'\"]+)['\"]",
+          "group": 1
+        },
+        {
+          "op": "reverse"
+        },
+        {
+          "op": "base64",
+          "charset": "latin1"
+        },
+        {
+          "op": "shift_key",
+          "key": "K9L",
+          "mod": 5,
+          "add": 1,
+          "dir": "sub"
+        },
+        {
+          "op": "base64",
+          "charset": "utf-8",
+          "as": "decoded"
+        },
+        {
+          "op": "regex",
+          "from": "decoded",
+          "pattern": "[\"']?cm[\"']?\\s*:\\s*[\"']([^\"']+)[\"']",
+          "group": 1,
+          "as": "audioUrl"
+        }
+      ],
+      "result": "audioUrl"
+    }
+  ]
+}
