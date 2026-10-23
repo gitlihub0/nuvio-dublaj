@@ -51,6 +51,15 @@ Bu listede olmayan yeni bir şifre çözme yöntemi için uygulamaya yeni `op` e
 - **Ses gelmiyor:** `scx`, `_p8`, `K9L` adımlarındaki regex ve anahtarı kontrol et.
 - **Yanlış film geliyor:** `check` adımının `tolerance` değerini düşür.
 
+## Rehber
+Ayrıntılı anlatım (eşleşme, güncelleme, yeni site ekleme, sorun giderme): [REHBER.md](REHBER.md)
+
+## Araçlar
+```
+python3 dubtool.py --provider fullhdfilmizlesene --imdb tt1375666 --title "Inception" --duration 148
+```
+`dubtool.py` tarifi gerçek isteklerle bilgisayarında çalıştırır ve her adımı gösterir.
+
 ## Test
 ```
 python3 test_recipe.py film_sayfasi.html
