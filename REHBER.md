@@ -121,13 +121,16 @@ Kullanılabilir işlemler:
 | op | parametreler | ne yapar |
 |---|---|---|
 | `http_get` | `url`, `referer`, `as` | sayfayı indirir |
-| `regex` | `pattern`, `group` (1), `dotAll`, `ignoreCase` | metinden parça çeker |
+| `regex` | `pattern` ya da `patterns` (liste, sırayla denenir, ilk eşleşen kazanır), `group` (1), `dotAll`, `ignoreCase` | metinden parça çeker |
 | `json_path` | `path` (örn. `a.b[0].c`) | JSON'dan değer alır |
 | `rot13` | | harf kaydırma |
 | `reverse` | | tersine çevirir |
 | `trim` | | baştaki/sondaki boşluğu siler |
 | `base64` | `charset`: `latin1` (varsayılan) ya da `utf-8` | çözer (eksik dolgu ve `-_` tolere edilir) |
 | `shift_key` | `key`, `mod` (5), `add` (1), `dir` (`sub`/`add`) | her karakteri `anahtar[i] % mod + add` kadar kaydırır |
+| `hls_audio` | `lang` (tr), `name` | link görüntü içeren bir master liste ise ayrı **ses parçasının** adresini seçer; ses parçası yoksa durur (video asla eklenmez). Medya listesi ya da sadece-ses master olduğu gibi geçer |
+| `replace` | `pattern`, `with`, `shift`, `ignoreCase` | desene uyan kısmı değiştirir. `with` içinde `\\1`, `\\2` grup başvurusu kullanılır. `shift`: `[{"group":2,"delta":1}]` o gruptaki harfi alfabede kaydırır |
+| `require` | `pattern` | sonuç desene uymuyorsa adım durur (yanlış dil/kaynak elemesi) |
 | `set` | `value` (`{cur}` önceki sonuç) | şablonla yeni metin üretir |
 | `check` | `from`, `pattern`, `expect`, `tolerance`, `required` | sayfadaki sayıyı bilinenle karşılaştırır |
 
@@ -243,3 +246,50 @@ Sık durumlar:
   kimlikli içeriklerde eşleşme artar; bu bir uygulama güncellemesi gerektirir.
 - Uzaktan sadece **veri** gelir, kod çalıştırılmaz. Yine de depoyu sadece sen düzenleyebilmelisin
   (GitHub hesabında iki adımlı doğrulama aç).
+
+
+## 6. Link video çıkıyorsa
+
+`dubtool.py` çıktısının sonunda **LİSTE İNCELEMESİ** bölümü çıkar: link ses mi, görüntü içeren
+master liste mi söyler. Tarifin son adımı `hls_audio` olmalı (varsayılan tarifte var). Sorun
+sürüyorsa decoded içeriği görmek için:
+
+```
+python3 dubtool.py --provider fullhdfilmizlesene --imdb tt... --title "..." --duration 120 --dump
+python3 dubtool.py --provider fullhdfilmizlesene --inspect "https://...ses-linki"
+```
+
+## 7. Ses linkinin içinden okunanlar (gerçek örnekler)
+
+Linkin gövdesi `rot13` + `base64` ile çözülünce yayın adını verir:
+`Spider-Man.Brand.New.Day.2026.WEB-DL.1080p.DUAL.x264-HDM`. **DUAL**, yayında iki ses olduğu
+(Türkçe + İngilizce) anlamına gelir. Linkin sonundaki `vr1b1080l0tra1` parçasında `tr` dil
+kodu gibi görünür; İngilizce için farklı bir son ek beklenir (doğrulanmadı).
+Tarifteki `require` adımı `tr` ile bitmeyen linki reddeder, uygulama da parçanın dili
+`und` dışında bir şeyse ve Türkçe değilse sesi eklemez.
+
+Parçaların `.jpg` uzantılı olması normaldir (site gizliyor). `dubtool.py --inspect <link>`
+ilk parçayı indirip içinde video olup olmadığını ve dilini söyler.
+
+### Dil son eki ve klasör harfi (fullhdfilmizlesene)
+
+Aynı filmin üç linki yalnızca sondaki ek ve klasör harfiyle ayrılır (gerçek örnek, sunucu s28):
+
+| Tür | Klasör | Son ek |
+|---|---|---|
+| Türkçe ses | `/mx/` | `...vr1b1080l0tra1` |
+| İngilizce ses | `/mw/` | `...vr1b1080l0ena2` |
+| Video | `/ms/` | `...avr1` |
+
+Tarif `cm` hangisini verirse versin Türkçe linke çevirir: `ena2` için klasör harfi +1 ve son ek
+`tra1`; video için harf +5 ve son ek `vr1b1080l0tra1`. Üretilen link yoksa (404) kaynak reddedilir.
+**Uyarı:** +1 ve +5 farkı yalnızca s28 sunucusunda doğrulandı. Başka sunucuda (örneğin Türkçe
+klasör `/mv/` olan s37) çalışmazsa `shift` değerlerini o sunucunun üç linkine göre düzelt.
+
+## 8. Hedef kural ve ilk çözme adımı
+
+Hedef her zaman `tra1` ile biten link. Tarif önce decoded içinde `tra\d+` ile biten bir link arar
+(varsa doğrudan onu alır), bulamazsa `cm` değerine düşer; `cm` İngilizce ya da video ise bu
+linki Türkçeye çevirmeyi dener (404 ise reddeder). `dubtool.py` uzun çıktıların **son 28
+karakterini** de gösterir, böylece linkin `tra1` / `ena2` / `avr1` ile bittiği görünür.
+Sorun olursa `--dump` ile decoded içeriğin tamamını al.
