@@ -162,7 +162,7 @@
     {
       "id": "hdfilmcehennemi",
       "enabled": true,
-      "label": "Türkçe Dublaj · HDFilmCehennemi",
+      "label": "Türkçe Dublaj · FilmCeh",
       "lang": "tr",
       "base": "https://www.hdfilmcehennemi.nl",
       "audioHeaders": {
