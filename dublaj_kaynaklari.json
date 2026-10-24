@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "autoSearch": false,
+  "autoSearch": true,
   "providers": [
     {
       "id": "fullhdfilmizlesene",
@@ -148,7 +148,7 @@
         {
           "op": "require",
           "from": "audioUrl",
-          "pattern": "tra\\d+$"
+          "pattern": "tra\\d+"
         },
         {
           "op": "hls_audio",
