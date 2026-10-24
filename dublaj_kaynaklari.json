@@ -1,34 +1,27 @@
 {
   "schemaVersion": 1,
-  "autoSearch": true,
+  "autoSearch": false,
   "providers": [
     {
-      "id": "fullhdfilmizlesene",
+      "id": "hdfilmcehennemi",
       "enabled": true,
-      "label": "Türkçe Dublaj · FullHD",
+      "label": "Türkçe Dublaj · HDFilmCehennemi",
       "lang": "tr",
-      "base": "https://www.fullhdfilmizlesene.now",
+      "base": "https://www.hdfilmcehennemi.nl",
       "audioHeaders": {
         "Origin": "{base}",
         "Referer": "{base}/"
       },
       "movie": {
         "queries": [
-          "{imdb}",
           "{title}"
         ]
       },
-      "series": {
-        "queries": [
-          "{title} {season} Sezon {episode} Bölüm"
-        ]
-      },
       "search": {
-        "url": "{base}/arama/{q}",
+        "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "<li[^>]*class=\"[^\"]*\\bfilm\\b[^\"]*\"[^>]*>(?:(?!</li>).)*?<a[^>]+href=\"([^\"]+)\"",
-          "href=\"((?:https://www\\.fullhdfilmizlesene\\.now)?/film/[^\"/]+/?)\""
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.nl\\\\/([^\"\\\\]+)\\\\/\\\\\""
         ]
       },
       "steps": [
@@ -36,6 +29,7 @@
           "op": "http_get",
           "url": "{page}",
           "referer": "{base}/",
+          "headers": {},
           "as": "html"
         },
         {
@@ -48,107 +42,39 @@
         {
           "op": "regex",
           "from": "html",
-          "pattern": "scx\\s*=\\s*(\\{.*?\\})\\s*;",
-          "dotAll": true,
+          "pattern": "rapidrame_id=([^&\"'\\s\\\\]+)",
           "group": 1,
-          "as": "scx"
+          "as": "rid"
         },
         {
-          "op": "json_path",
-          "from": "scx",
-          "path": "atom.sx.t[0]"
-        },
-        {
-          "op": "rot13"
-        },
-        {
-          "op": "base64",
-          "as": "player"
+          "op": "set",
+          "value": "{base}/playerr/{rid}/",
+          "as": "playerUrl"
         },
         {
           "op": "http_get",
-          "url": "{player}",
+          "url": "{playerUrl}",
           "referer": "{base}/",
+          "headers": {},
           "as": "playerHtml"
         },
         {
           "op": "regex",
           "from": "playerHtml",
-          "pattern": "_p8\\s*=\\s*['\"]([^'\"]+)['\"]",
-          "group": 1
-        },
-        {
-          "op": "reverse"
-        },
-        {
-          "op": "base64",
-          "charset": "latin1"
-        },
-        {
-          "op": "shift_key",
-          "key": "K9L",
-          "mod": 5,
-          "add": 1,
-          "dir": "sub"
-        },
-        {
-          "op": "base64",
-          "charset": "utf-8",
-          "as": "decoded"
-        },
-        {
-          "op": "regex",
-          "from": "decoded",
+          "pattern": "<script[^>]*>((?:(?!</script>).)*?sources:(?:(?!</script>).)*)</script>",
+          "dotAll": true,
           "group": 1,
-          "as": "audioUrl",
-          "patterns": [
-            "(https://[^\"'\\s\\\\]+?tra\\d+)(?=[\"'\\s,}\\\\]|$)",
-            "[\"']?cm[\"']?\\s*:\\s*[\"']([^\"']+)[\"']"
-          ]
+          "as": "script"
         },
         {
-          "op": "replace",
-          "from": "audioUrl",
-          "pattern": "^(https://[^/]+/m)([a-z])(/.*)ena2$",
-          "with": "\\1\\2\\3tra1",
-          "shift": [
-            {
-              "group": 2,
-              "delta": 1
-            }
-          ],
+          "op": "js_unpack",
+          "from": "script",
+          "as": "unpacked"
+        },
+        {
+          "op": "rapidrame_decode",
+          "from": "unpacked",
           "as": "audioUrl"
-        },
-        {
-          "op": "replace",
-          "from": "audioUrl",
-          "pattern": "^(https://[^/]+/m)([a-z])(/.+)avr1$",
-          "with": "\\1\\2\\3vr1b1080l0tra1",
-          "shift": [
-            {
-              "group": 2,
-              "delta": 5
-            }
-          ],
-          "as": "audioUrl"
-        },
-        {
-          "op": "replace",
-          "from": "audioUrl",
-          "pattern": "^(https://[^/]+/m)([a-z])(/.+vr1)$",
-          "with": "\\1\\2\\3b1080l0tra1",
-          "shift": [
-            {
-              "group": 2,
-              "delta": 5
-            }
-          ],
-          "as": "audioUrl"
-        },
-        {
-          "op": "require",
-          "from": "audioUrl",
-          "pattern": "tra\\d+$"
         },
         {
           "op": "hls_audio",
@@ -157,7 +83,10 @@
           "as": "audioFinal"
         }
       ],
-      "result": "audioFinal"
+      "result": "audioFinal",
+      "headers": {
+        "X-Requested-With": "fetch"
+      }
     }
   ]
 }
