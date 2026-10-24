@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "autoSearch": true,
+  "autoSearch": false,
   "providers": [
     {
       "id": "fullhdfilmizlesene",
@@ -158,6 +158,92 @@
         }
       ],
       "result": "audioFinal"
+    },
+    {
+      "id": "hdfilmcehennemi",
+      "enabled": true,
+      "label": "Türkçe Dublaj · HDFilmCehennemi",
+      "lang": "tr",
+      "base": "https://www.hdfilmcehennemi.nl",
+      "audioHeaders": {
+        "Origin": "{base}",
+        "Referer": "{base}/"
+      },
+      "movie": {
+        "queries": [
+          "{title}"
+        ]
+      },
+      "search": {
+        "url": "{base}/search?q={q}",
+        "maxCandidates": 3,
+        "pick": [
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.nl\\\\/([^\"\\\\]+)\\\\/\\\\\""
+        ]
+      },
+      "steps": [
+        {
+          "op": "http_get",
+          "url": "{page}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "html"
+        },
+        {
+          "op": "check",
+          "from": "html",
+          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
+          "expect": "durationMin",
+          "tolerance": 5
+        },
+        {
+          "op": "regex",
+          "from": "html",
+          "pattern": "rapidrame_id=([^&\"'\\s\\\\]+)",
+          "group": 1,
+          "as": "rid"
+        },
+        {
+          "op": "set",
+          "value": "{base}/playerr/{rid}/",
+          "as": "playerUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{playerUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "playerHtml"
+        },
+        {
+          "op": "regex",
+          "from": "playerHtml",
+          "pattern": "<script[^>]*>((?:(?!</script>).)*?sources:(?:(?!</script>).)*)</script>",
+          "dotAll": true,
+          "group": 1,
+          "as": "script"
+        },
+        {
+          "op": "js_unpack",
+          "from": "script",
+          "as": "unpacked"
+        },
+        {
+          "op": "rapidrame_decode",
+          "from": "unpacked",
+          "as": "audioUrl"
+        },
+        {
+          "op": "hls_audio",
+          "from": "audioUrl",
+          "lang": "tr",
+          "as": "audioFinal"
+        }
+      ],
+      "result": "audioFinal",
+      "headers": {
+        "X-Requested-With": "fetch"
+      }
     }
   ]
 }
