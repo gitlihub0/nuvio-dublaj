@@ -21,13 +21,13 @@
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=[\"']((?:https?:)?//(?:www\\.)?hdfilmcehennemi\\.[a-z]+/[^\"']+)[\"']"
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\""
         ]
       },
       "steps": [
         {
           "op": "http_get",
-          "url": "{page}",
+          "url": "{page}/",
           "referer": "{base}/",
           "headers": {},
           "as": "html"
@@ -95,13 +95,13 @@
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=[\"']((?:https?:)?//(?:www\\.)?hdfilmcehennemi\\.[a-z]+/[^\"']+)[\"']"
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\""
         ]
       },
       "steps": [
         {
           "op": "http_get",
-          "url": "{page}",
+          "url": "{page}/",
           "referer": "{base}/",
           "headers": {},
           "as": "html"
@@ -116,7 +116,7 @@
         {
           "op": "http_get",
           "url": "{base}/video/{vid}/",
-          "referer": "{page}",
+          "referer": "{page}/",
           "headers": {
             "X-Requested-With": "fetch"
           },
