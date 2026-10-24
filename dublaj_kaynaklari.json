@@ -43,7 +43,7 @@
           "from": "html",
           "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
           "expect": "durationMin",
-          "tolerance": 20
+          "tolerance": 5
         },
         {
           "op": "regex",
@@ -99,12 +99,52 @@
         {
           "op": "regex",
           "from": "decoded",
-          "pattern": "[\"']?cm[\"']?\\s*:\\s*[\"']([^\"']+)[\"']",
           "group": 1,
+          "as": "audioUrl",
+          "patterns": [
+            "(https://[^\"'\\s\\\\]+?tra\\d+)(?=[\"'\\s,}\\\\]|$)",
+            "[\"']?cm[\"']?\\s*:\\s*[\"']([^\"']+)[\"']"
+          ]
+        },
+        {
+          "op": "replace",
+          "from": "audioUrl",
+          "pattern": "^(https://[^/]+/m)([a-z])(/.*)ena2$",
+          "with": "\\1\\2\\3tra1",
+          "shift": [
+            {
+              "group": 2,
+              "delta": 1
+            }
+          ],
           "as": "audioUrl"
+        },
+        {
+          "op": "replace",
+          "from": "audioUrl",
+          "pattern": "^(https://[^/]+/m)([a-z])(/.+)avr1$",
+          "with": "\\1\\2\\3vr1b1080l0tra1",
+          "shift": [
+            {
+              "group": 2,
+              "delta": 5
+            }
+          ],
+          "as": "audioUrl"
+        },
+        {
+          "op": "require",
+          "from": "audioUrl",
+          "pattern": "tra\\d+$"
+        },
+        {
+          "op": "hls_audio",
+          "from": "audioUrl",
+          "lang": "tr",
+          "as": "audioFinal"
         }
       ],
-      "result": "audioUrl"
+      "result": "audioFinal"
     }
   ]
 }
