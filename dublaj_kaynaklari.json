@@ -162,7 +162,7 @@
     {
       "id": "hdfilmcehennemi",
       "enabled": true,
-      "label": "Türkçe Dublaj · FilmCeh",
+      "label": "Türkçe Dublaj · HDFilmCehennemi",
       "lang": "tr",
       "base": "https://www.hdfilmcehennemi.nl",
       "audioHeaders": {
@@ -174,11 +174,11 @@
           "{title}"
         ]
       },
-      "search": {
+"search": {
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.nl\\\\/([^\"\\\\]+)\\\\/\\\\\""
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\""
         ]
       },
       "steps": [
@@ -311,7 +311,7 @@
         {
           "op": "regex",
           "from": "vresp",
-          "pattern": "rapidrame_id=([^&\"\\s\\\\]+)",
+          "pattern": "(?:rapidrame_id=|r?playerr?\\\\?/)([^&\"\\s\\\\/?]+)",
           "group": 1,
           "as": "rid"
         },
