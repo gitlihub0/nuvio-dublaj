@@ -133,6 +133,19 @@
           "as": "audioUrl"
         },
         {
+          "op": "replace",
+          "from": "audioUrl",
+          "pattern": "^(https://[^/]+/m)([a-z])(/.+vr1)$",
+          "with": "\\1\\2\\3b1080l0tra1",
+          "shift": [
+            {
+              "group": 2,
+              "delta": 5
+            }
+          ],
+          "as": "audioUrl"
+        },
+        {
           "op": "require",
           "from": "audioUrl",
           "pattern": "tra\\d+$"
