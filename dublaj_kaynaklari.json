@@ -1,3 +1,4 @@
+
 {
   "schemaVersion": 1,
   "autoSearch": false,
@@ -36,13 +37,6 @@
           "referer": "{base}/",
           "headers": {},
           "as": "html"
-        },
-        {
-          "op": "check",
-          "from": "html",
-          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
-          "expect": "durationMin",
-          "tolerance": 5
         },
         {
           "op": "regex",
@@ -127,13 +121,6 @@
           "referer": "{base}/",
           "headers": {},
           "as": "html"
-        },
-        {
-          "op": "check",
-          "from": "html",
-          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
-          "expect": "durationMin",
-          "tolerance": 5
         },
         {
           "op": "regex",
