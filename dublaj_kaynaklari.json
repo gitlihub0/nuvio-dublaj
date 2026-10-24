@@ -5,7 +5,7 @@
     {
       "id": "fullhdfilmizlesene",
       "enabled": true,
-      "label": "Türkçe Dublaj",
+      "label": "Türkçe Dublaj · FullHD",
       "lang": "tr",
       "base": "https://www.fullhdfilmizlesene.now",
       "audioHeaders": {
