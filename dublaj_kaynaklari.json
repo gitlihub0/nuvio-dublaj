@@ -1,4 +1,3 @@
-
 {
   "schemaVersion": 1,
   "autoSearch": false,
@@ -27,13 +26,8 @@
       },
       "steps": [
         {
-          "op": "set",
-          "value": "{page}/",
-          "as": "pageUrl"
-        },
-        {
           "op": "http_get",
-          "url": "{pageUrl}",
+          "url": "{page}",
           "referer": "{base}/",
           "headers": {},
           "as": "html"
@@ -46,13 +40,8 @@
           "as": "rid"
         },
         {
-          "op": "set",
-          "value": "{base}/playerr/{rid}/",
-          "as": "playerUrl"
-        },
-        {
           "op": "http_get",
-          "url": "{playerUrl}",
+          "url": "{base}/playerr/{rid}/",
           "referer": "{base}/",
           "headers": {},
           "as": "playerHtml"
@@ -111,13 +100,8 @@
       },
       "steps": [
         {
-          "op": "set",
-          "value": "{page}/",
-          "as": "pageUrl"
-        },
-        {
           "op": "http_get",
-          "url": "{pageUrl}",
+          "url": "{page}",
           "referer": "{base}/",
           "headers": {},
           "as": "html"
@@ -132,7 +116,7 @@
         {
           "op": "http_get",
           "url": "{base}/video/{vid}/",
-          "referer": "{pageUrl}",
+          "referer": "{page}",
           "headers": {
             "X-Requested-With": "fetch"
           },
@@ -141,18 +125,13 @@
         {
           "op": "regex",
           "from": "vresp",
-          "pattern": "(?:rapidrame_id=|r?playerr?\\\\?/)([^&\"\\s\\\\/?]+)",
+          "pattern": "(?:rapidrame_id=|r?playerr?\\\\?/)([^&\"\\'\\s\\\\/?]+)",
           "group": 1,
           "as": "rid"
         },
         {
-          "op": "set",
-          "value": "{base}/playerr/{rid}/",
-          "as": "playerUrl"
-        },
-        {
           "op": "http_get",
-          "url": "{playerUrl}",
+          "url": "{base}/playerr/{rid}/",
           "referer": "{base}/",
           "headers": {},
           "as": "playerHtml"
