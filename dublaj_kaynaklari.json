@@ -422,10 +422,26 @@
           "headers": {},
           "as": "html"
         },
-        {
+{
           "op": "regex",
           "from": "html",
-          "pattern": "rapidrame_id=([^&\"\\'\\s\\\\]+)",
+          "pattern": "data-video=\"(\\d+)\"[^>]*>\\s*Rapidrame",
+          "group": 1,
+          "as": "vid"
+        },
+        {
+          "op": "http_get",
+          "url": "{base}/video/{vid}/",
+          "referer": "{episodeUrl}",
+          "headers": {
+            "X-Requested-With": "fetch"
+          },
+          "as": "vresp"
+        },
+        {
+          "op": "regex",
+          "from": "vresp",
+          "pattern": "(?:rapidrame_id=|r?playerr?\\\\?/)([^&\"\\s\\\\/?]+)",
           "group": 1,
           "as": "rid"
         },
