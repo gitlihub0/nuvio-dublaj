@@ -15,13 +15,11 @@
       },
       "movie": {
         "queries": [
+          "{title} {year}",
+          "{title}",
           "{imdb}",
-          "{title}"
-        ]
-      },
-      "series": {
-        "queries": [
-          "{title} {season} Sezon {episode} Bölüm"
+          "{title_tmdb} {year}",
+          "{title_tmdb}"
         ]
       },
       "search": {
@@ -38,13 +36,6 @@
           "url": "{page}",
           "referer": "{base}/",
           "as": "html"
-        },
-        {
-          "op": "check",
-          "from": "html",
-          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
-          "expect": "durationMin",
-          "tolerance": 5
         },
         {
           "op": "regex",
@@ -173,10 +164,13 @@
       },
       "movie": {
         "queries": [
-          "{title}"
+          "{title} {year}",
+          "{title}",
+          "{title_tmdb} {year}",
+          "{title_tmdb}"
         ]
       },
-"search": {
+      "search": {
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
@@ -195,13 +189,6 @@
           "referer": "{base}/",
           "headers": {},
           "as": "html"
-        },
-        {
-          "op": "check",
-          "from": "html",
-          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
-          "expect": "durationMin",
-          "tolerance": 5
         },
         {
           "op": "regex",
@@ -265,7 +252,10 @@
       },
       "movie": {
         "queries": [
-          "{title}"
+          "{title} {year}",
+          "{title}",
+          "{title_tmdb} {year}",
+          "{title_tmdb}"
         ]
       },
       "search": {
@@ -287,13 +277,6 @@
           "referer": "{base}/",
           "headers": {},
           "as": "html"
-        },
-        {
-          "op": "check",
-          "from": "html",
-          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
-          "expect": "durationMin",
-          "tolerance": 5
         },
         {
           "op": "regex",
@@ -373,14 +356,17 @@
       },
       "series": {
         "queries": [
-          "{title}"
+          "{title} {year}",
+          "{title}",
+          "{title_tmdb} {year}",
+          "{title_tmdb}"
         ]
       },
       "search": {
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\""
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/(dizi\\\\/[^\"\\\\]+)\\\\/\\\\\""
         ]
       },
       "steps": [
