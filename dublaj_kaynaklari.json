@@ -181,7 +181,8 @@
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\""
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\"",
+          "href=\"https://www\\.hdfilmcehennemi\\.[a-z]+/([^\"]+)/\""
         ]
       },
       "steps": [
@@ -276,7 +277,8 @@
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.nl\\\\/([^\"\\\\]+)\\\\/\\\\\""
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.nl\\\\/([^\"\\\\]+)\\\\/\\\\\"",
+          "href=\"https://www\\.hdfilmcehennemi\\.nl/([^\"]+)/\""
         ]
       },
       "steps": [
@@ -422,10 +424,11 @@
           "headers": {},
           "as": "html"
         },
-{
+        {
           "op": "regex",
           "from": "html",
-          "pattern": "data-video=\"(\\d+)\"[^>]*>\\s*Rapidrame",
+          "pattern": "data-video=\"(\\d+)\"[^>]*>\\s*(?:Rapidrame|Rapid|Altyazı|Türkçe)",
+          "ignoreCase": true,
           "group": 1,
           "as": "vid"
         },
