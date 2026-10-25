@@ -181,8 +181,7 @@
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\"",
-          "href=\"https://www\\.hdfilmcehennemi\\.[a-z]+/([^\"]+)/\""
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\""
         ]
       },
       "steps": [
@@ -277,8 +276,7 @@
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.nl\\\\/([^\"\\\\]+)\\\\/\\\\\"",
-          "href=\"https://www\\.hdfilmcehennemi\\.nl/([^\"]+)/\""
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.nl\\\\/([^\"\\\\]+)\\\\/\\\\\""
         ]
       },
       "steps": [
@@ -387,8 +385,7 @@
         "url": "{base}/search?q={q}",
         "maxCandidates": 3,
         "pick": [
-          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/(dizi\\\\/[^\"\\\\]+)\\\\/\\\\\"",
-          "href=\"https://www\\.hdfilmcehennemi\\.[a-z]+/(dizi/[^\"]+)/\""
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/(dizi\\\\/[^\"\\\\]+)\\\\/\\\\\""
         ]
       },
       "steps": [
@@ -425,11 +422,10 @@
           "headers": {},
           "as": "html"
         },
-        {
+{
           "op": "regex",
           "from": "html",
-          "pattern": "data-video=\"(\\d+)\"[^>]*>\\s*(?:Rapidrame|Rapid|Altyazı|Türkçe)",
-          "ignoreCase": true,
+          "pattern": "data-video=\"(\\d+)\"[^>]*>\\s*Rapidrame",
           "group": 1,
           "as": "vid"
         },
