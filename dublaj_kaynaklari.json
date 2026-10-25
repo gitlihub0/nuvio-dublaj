@@ -15,9 +15,9 @@
       },
       "movie": {
         "queries": [
+          "{imdb}",
           "{title} {year}",
           "{title}",
-          "{imdb}",
           "{title_tmdb} {year}",
           "{title_tmdb}"
         ]
@@ -43,6 +43,14 @@
           "pattern": "(?:imdb\\.com/title/|imdb_?id[\\\"']?\\s*[:=]\\s*[\\\"']?)(tt\\d+)",
           "ignoreCase": true,
           "expect": "imdb"
+        },
+        {
+          "op": "check",
+          "from": "html",
+          "pattern": "<title>[^<]*\\((\\d{4})\\)</title>",
+          "expect": "year",
+          "tolerance": 1,
+          "required": true
         },
         {
           "op": "regex",
@@ -422,7 +430,7 @@
           "headers": {},
           "as": "html"
         },
-{
+        {
           "op": "regex",
           "from": "html",
           "pattern": "data-video=\"(\\d+)\"[^>]*>\\s*Rapidrame",
