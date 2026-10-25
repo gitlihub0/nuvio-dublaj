@@ -38,6 +38,13 @@
           "as": "html"
         },
         {
+          "op": "check",
+          "from": "html",
+          "pattern": "(?:imdb\\.com/title/|imdb_?id[\\\"']?\\s*[:=]\\s*[\\\"']?)(tt\\d+)",
+          "ignoreCase": true,
+          "expect": "imdb"
+        },
+        {
           "op": "regex",
           "from": "html",
           "pattern": "scx\\s*=\\s*(\\{.*?\\})\\s*;",
@@ -191,6 +198,13 @@
           "as": "html"
         },
         {
+          "op": "check",
+          "from": "html",
+          "pattern": "(?:imdb\\.com/title/|imdb_?id[\\\"']?\\s*[:=]\\s*[\\\"']?)(tt\\d+)",
+          "ignoreCase": true,
+          "expect": "imdb"
+        },
+        {
           "op": "regex",
           "from": "html",
           "pattern": "rapidrame_id=([^&\"\\'\\s\\\\]+)",
@@ -279,6 +293,13 @@
           "as": "html"
         },
         {
+          "op": "check",
+          "from": "html",
+          "pattern": "(?:imdb\\.com/title/|imdb_?id[\\\"']?\\s*[:=]\\s*[\\\"']?)(tt\\d+)",
+          "ignoreCase": true,
+          "expect": "imdb"
+        },
+        {
           "op": "regex",
           "from": "html",
           "pattern": "data-video=\"(\\d+)\"[^>]*>\\s*Rapidrame",
@@ -356,9 +377,7 @@
       },
       "series": {
         "queries": [
-          "{title} {year}",
           "{title}",
-          "{title_tmdb} {year}",
           "{title_tmdb}"
         ]
       },
@@ -383,9 +402,16 @@
           "as": "seriesHtml"
         },
         {
+          "op": "check",
+          "from": "seriesHtml",
+          "pattern": "(?:imdb\\.com/title/|imdb_?id[\\\"']?\\s*[:=]\\s*[\\\"']?)(tt\\d+)",
+          "ignoreCase": true,
+          "expect": "imdb"
+        },
+        {
           "op": "regex",
           "from": "seriesHtml",
-          "pattern": "href=\"({page}/sezon-{season}/bolum-{episode}-[^\"/]+/)\"",
+          "pattern": "href=\"(https://[^\"/]+/dizi/[^\"/]+/sezon-{season}/bolum-{episode}-[^\"/]+/)\"",
           "group": 1,
           "as": "episodeUrl"
         },
