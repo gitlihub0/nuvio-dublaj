@@ -411,7 +411,7 @@
         {
           "op": "regex",
           "from": "seriesHtml",
-          "pattern": "href=\"(https://[^\"/]+/dizi/[^\"/]+/sezon-{season}/bolum-{episode}-[^\"/]+/)\"",
+          "pattern": "href=\"(https://[^\"/]+/dizi/[^\"/]+/sezon-{season}/bolum-{episode}[^\"]*)\"",
           "group": 1,
           "as": "episodeUrl"
         },
