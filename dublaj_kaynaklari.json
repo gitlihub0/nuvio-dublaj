@@ -5,6 +5,7 @@
     {
       "id": "fullhdfilmizlesene",
       "enabled": true,
+      "audioDelayMs": 0,
       "label": "Türkçe Dublaj · FullHD",
       "lang": "tr",
       "base": "https://www.fullhdfilmizlesene.now",
@@ -158,6 +159,305 @@
         }
       ],
       "result": "audioFinal"
+    },
+    {
+      "id": "hdfilmcehennemi",
+      "enabled": true,
+      "audioDelayMs": 0,
+      "label": "Türkçe Dublaj · HDFilmCehennemi",
+      "lang": "tr",
+      "base": "https://www.hdfilmcehennemi.nl",
+      "audioHeaders": {
+        "Origin": "{base}",
+        "Referer": "{base}/"
+      },
+      "movie": {
+        "queries": [
+          "{title}"
+        ]
+      },
+"search": {
+        "url": "{base}/search?q={q}",
+        "maxCandidates": 3,
+        "pick": [
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\""
+        ]
+      },
+      "steps": [
+        {
+          "op": "set",
+          "value": "{page}/",
+          "as": "pageUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{pageUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "html"
+        },
+        {
+          "op": "check",
+          "from": "html",
+          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
+          "expect": "durationMin",
+          "tolerance": 5
+        },
+        {
+          "op": "regex",
+          "from": "html",
+          "pattern": "rapidrame_id=([^&\"\\'\\s\\\\]+)",
+          "group": 1,
+          "as": "rid"
+        },
+        {
+          "op": "set",
+          "value": "{base}/playerr/{rid}/",
+          "as": "playerUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{playerUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "playerHtml"
+        },
+        {
+          "op": "regex",
+          "from": "playerHtml",
+          "pattern": "<script[^>]*>((?:(?!</script>).)*?sources:(?:(?!</script>).)*)</script>",
+          "dotAll": true,
+          "group": 1,
+          "as": "script"
+        },
+        {
+          "op": "js_unpack",
+          "from": "script",
+          "as": "unpacked"
+        },
+        {
+          "op": "rapidrame_decode",
+          "from": "unpacked",
+          "as": "audioUrl"
+        },
+        {
+          "op": "hls_audio",
+          "from": "audioUrl",
+          "lang": "tr",
+          "as": "audioFinal"
+        }
+      ],
+      "result": "audioFinal",
+      "headers": {
+        "X-Requested-With": "fetch"
+      }
+    },
+    {
+      "id": "hdfilmcehennemi-rapidrame",
+      "enabled": true,
+      "audioDelayMs": 0,
+      "label": "Türkçe Dublaj · HDFilmCehennemi (Rapidrame)",
+      "lang": "tr",
+      "base": "https://www.hdfilmcehennemi.nl",
+      "audioHeaders": {
+        "Origin": "{base}",
+        "Referer": "{base}/"
+      },
+      "movie": {
+        "queries": [
+          "{title}"
+        ]
+      },
+      "search": {
+        "url": "{base}/search?q={q}",
+        "maxCandidates": 3,
+        "pick": [
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.nl\\\\/([^\"\\\\]+)\\\\/\\\\\""
+        ]
+      },
+      "steps": [
+        {
+          "op": "set",
+          "value": "{page}/",
+          "as": "pageUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{pageUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "html"
+        },
+        {
+          "op": "check",
+          "from": "html",
+          "pattern": "\"duration\":\\s*\"PT(\\d+)M\"",
+          "expect": "durationMin",
+          "tolerance": 5
+        },
+        {
+          "op": "regex",
+          "from": "html",
+          "pattern": "data-video=\"(\\d+)\"[^>]*>\\s*Rapidrame",
+          "group": 1,
+          "as": "vid"
+        },
+        {
+          "op": "http_get",
+          "url": "{base}/video/{vid}/",
+          "referer": "{pageUrl}",
+          "headers": {
+            "X-Requested-With": "fetch"
+          },
+          "as": "vresp"
+        },
+        {
+          "op": "regex",
+          "from": "vresp",
+          "pattern": "(?:rapidrame_id=|r?playerr?\\\\?/)([^&\"\\s\\\\/?]+)",
+          "group": 1,
+          "as": "rid"
+        },
+        {
+          "op": "set",
+          "value": "{base}/playerr/{rid}/",
+          "as": "playerUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{playerUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "playerHtml"
+        },
+        {
+          "op": "regex",
+          "from": "playerHtml",
+          "pattern": "<script[^>]*>((?:(?!</script>).)*?sources:(?:(?!</script>).)*)</script>",
+          "dotAll": true,
+          "group": 1,
+          "as": "script"
+        },
+        {
+          "op": "js_unpack",
+          "from": "script",
+          "as": "unpacked"
+        },
+        {
+          "op": "rapidrame_decode",
+          "from": "unpacked",
+          "as": "audioUrl"
+        },
+        {
+          "op": "hls_audio",
+          "from": "audioUrl",
+          "lang": "tr",
+          "as": "audioFinal"
+        }
+      ],
+      "result": "audioFinal",
+      "headers": {
+        "X-Requested-With": "fetch"
+      }
+    },
+    {
+      "id": "hdfilmcehennemi-dizi",
+      "enabled": true,
+      "audioDelayMs": 0,
+      "label": "Türkçe Dublaj · HDFilmCehennemi",
+      "lang": "tr",
+      "base": "https://www.hdfilmcehennemi.nl",
+      "audioHeaders": {
+        "Origin": "{base}",
+        "Referer": "{base}/"
+      },
+      "series": {
+        "queries": [
+          "{title}"
+        ]
+      },
+      "search": {
+        "url": "{base}/search?q={q}",
+        "maxCandidates": 3,
+        "pick": [
+          "href=\\\\\"https:\\\\/\\\\/www\\.hdfilmcehennemi\\.[a-z]+\\\\/([^\"\\\\]+)\\\\/\\\\\""
+        ]
+      },
+      "steps": [
+        {
+          "op": "set",
+          "value": "{page}/",
+          "as": "seriesUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{seriesUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "seriesHtml"
+        },
+        {
+          "op": "regex",
+          "from": "seriesHtml",
+          "pattern": "href=\"({page}/sezon-{season}/bolum-{episode}-[^\"/]+/)\"",
+          "group": 1,
+          "as": "episodeUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{episodeUrl}",
+          "referer": "{seriesUrl}",
+          "headers": {},
+          "as": "html"
+        },
+        {
+          "op": "regex",
+          "from": "html",
+          "pattern": "rapidrame_id=([^&\"\\'\\s\\\\]+)",
+          "group": 1,
+          "as": "rid"
+        },
+        {
+          "op": "set",
+          "value": "{base}/playerr/{rid}/",
+          "as": "playerUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{playerUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "playerHtml"
+        },
+        {
+          "op": "regex",
+          "from": "playerHtml",
+          "pattern": "<script[^>]*>((?:(?!</script>).)*?sources:(?:(?!</script>).)*)</script>",
+          "dotAll": true,
+          "group": 1,
+          "as": "script"
+        },
+        {
+          "op": "js_unpack",
+          "from": "script",
+          "as": "unpacked"
+        },
+        {
+          "op": "rapidrame_decode",
+          "from": "unpacked",
+          "as": "audioUrl"
+        },
+        {
+          "op": "hls_audio",
+          "from": "audioUrl",
+          "lang": "tr",
+          "as": "audioFinal"
+        }
+      ],
+      "result": "audioFinal",
+      "headers": {
+        "X-Requested-With": "fetch"
+      }
     }
   ]
 }
