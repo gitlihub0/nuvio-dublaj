@@ -14,20 +14,18 @@
         "Referer": "{base}/"
       },
       "movie": {
+        "stopOnImdbMatch": true,
         "queries": [
           "{imdb}",
           "{title} {year}",
-          "{title}",
-          "{title_tmdb} {year}",
-          "{title_tmdb}"
+          "{title_tmdb} {year}"
         ]
       },
       "search": {
         "url": "{base}/arama/{q}",
         "maxCandidates": 3,
         "pick": [
-          "<li[^>]*class=\"[^\"]*\\bfilm\\b[^\"]*\"[^>]*>(?:(?!</li>).)*?<a[^>]+href=\"([^\"]+)\"",
-          "href=\"((?:https://www\\.fullhdfilmizlesene\\.now)?/film/[^\"/]+/?)\""
+          "<li[^>]*class=\"[^\"]*\\bfilm\\b[^\"]*\"[^>]*>(?:(?!</li>).)*?<a[^>]+href=\"([^\"]+)\""
         ]
       },
       "steps": [
@@ -50,6 +48,7 @@
           "pattern": "<title>[^<]*\\((\\d{4})\\)</title>",
           "expect": "year",
           "tolerance": 1,
+          "skipIfImdbVerified": true,
           "required": true
         },
         {
@@ -81,8 +80,11 @@
         {
           "op": "regex",
           "from": "playerHtml",
-          "pattern": "_p8\\s*=\\s*['\"]([^'\"]+)['\"]",
-          "group": 1
+          "group": 1,
+          "patterns": [
+            "_p8\\s*=\\s*['\"]([^'\"]+)['\"]",
+            "\\bav\\('([^']+)'\\)"
+          ]
         },
         {
           "op": "reverse"
@@ -110,7 +112,8 @@
           "as": "audioUrl",
           "patterns": [
             "(https://[^\"'\\s\\\\]+?tra\\d+)(?=[\"'\\s,}\\\\]|$)",
-            "[\"']?cm[\"']?\\s*:\\s*[\"']([^\"']+)[\"']"
+            "[\"']?cm[\"']?\\s*:\\s*[\"']([^\"']+)[\"']",
+            "(https://[^\"'\\s\\\\]+)"
           ]
         },
         {
@@ -178,11 +181,11 @@
         "Referer": "{base}/"
       },
       "movie": {
+        "stopOnImdbMatch": true,
         "queries": [
+          "{imdb}",
           "{title} {year}",
-          "{title}",
-          "{title_tmdb} {year}",
-          "{title_tmdb}"
+          "{title_tmdb} {year}"
         ]
       },
       "search": {
@@ -211,6 +214,15 @@
           "pattern": "(?:imdb\\.com/title/|imdb_?id[\\\"']?\\s*[:=]\\s*[\\\"']?)(tt\\d+)",
           "ignoreCase": true,
           "expect": "imdb"
+        },
+        {
+          "op": "check",
+          "from": "html",
+          "pattern": "<small>\\((\\d{4})\\)</small>\\s*</h1>",
+          "expect": "year",
+          "tolerance": 1,
+          "skipIfImdbVerified": true,
+          "required": true
         },
         {
           "op": "regex",
@@ -273,11 +285,11 @@
         "Referer": "{base}/"
       },
       "movie": {
+        "stopOnImdbMatch": true,
         "queries": [
+          "{imdb}",
           "{title} {year}",
-          "{title}",
-          "{title_tmdb} {year}",
-          "{title_tmdb}"
+          "{title_tmdb} {year}"
         ]
       },
       "search": {
@@ -306,6 +318,15 @@
           "pattern": "(?:imdb\\.com/title/|imdb_?id[\\\"']?\\s*[:=]\\s*[\\\"']?)(tt\\d+)",
           "ignoreCase": true,
           "expect": "imdb"
+        },
+        {
+          "op": "check",
+          "from": "html",
+          "pattern": "<small>\\((\\d{4})\\)</small>\\s*</h1>",
+          "expect": "year",
+          "tolerance": 1,
+          "skipIfImdbVerified": true,
+          "required": true
         },
         {
           "op": "regex",
