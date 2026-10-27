@@ -48,8 +48,8 @@
           "pattern": "<title>[^<]*\\((\\d{4})\\)</title>",
           "expect": "year",
           "tolerance": 1,
-          "skipIfImdbVerified": true,
-          "required": true
+          "required": true,
+          "skipIfImdbVerified": true
         },
         {
           "op": "regex",
@@ -221,8 +221,7 @@
           "pattern": "<small>\\((\\d{4})\\)</small>\\s*</h1>",
           "expect": "year",
           "tolerance": 1,
-          "skipIfImdbVerified": true,
-          "required": true
+          "skipIfImdbVerified": true
         },
         {
           "op": "regex",
@@ -325,8 +324,7 @@
           "pattern": "<small>\\((\\d{4})\\)</small>\\s*</h1>",
           "expect": "year",
           "tolerance": 1,
-          "skipIfImdbVerified": true,
-          "required": true
+          "skipIfImdbVerified": true
         },
         {
           "op": "regex",
