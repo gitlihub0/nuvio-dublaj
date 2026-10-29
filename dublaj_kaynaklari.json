@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "autoSearch": false,
+  "autoSearch": true,
   "providers": [
     {
       "id": "fullfilm",
