@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "autoSearch": true,
+  "autoSearch": false,
   "providers": [
     {
-      "id": "fullfilm",
+      "id": "fullhdfilmizlesene",
       "enabled": true,
       "audioDelayMs": 0,
       "label": "Türkçe Dublaj · FullHD",
@@ -188,7 +188,7 @@
       },
       "search": {
         "url": "{base}/ara?q={q}",
-        "maxCandidates": 1,
+        "maxCandidates": 3,
         "pick": [
           "href=\"(https://www\\.dizigom\\.news/diziler/[^\"/]+/?)\""
         ]
@@ -200,6 +200,40 @@
           "pattern": "/diziler/([a-z0-9-]+?)(?:-izle)?/?$",
           "group": 1,
           "as": "seriesSlug"
+        },
+        {
+          "op": "set",
+          "value": "{title}",
+          "as": "titleSlug"
+        },
+        {
+          "op": "replace",
+          "from": "titleSlug",
+          "pattern": "['’`]",
+          "with": "",
+          "as": "titleSlug"
+        },
+        {
+          "op": "replace",
+          "from": "titleSlug",
+          "pattern": "[^A-Za-z0-9]+",
+          "with": "-",
+          "as": "titleSlug"
+        },
+        {
+          "op": "replace",
+          "from": "titleSlug",
+          "pattern": "^-+|-+$",
+          "with": "",
+          "as": "titleSlug"
+        },
+        {
+          "op": "regex",
+          "from": "seriesSlug",
+          "pattern": "^{titleSlug}(?:-izle)?(?:-(?:hd\\d*|md|us|uk|\\d{4}))?$",
+          "ignoreCase": true,
+          "group": 0,
+          "as": "slugOk"
         },
         {
           "op": "set",
@@ -216,13 +250,19 @@
         {
           "op": "regex",
           "from": "html",
-          "pattern": "data-pv=\"([^\"]+)\"",
           "group": 1,
-          "as": "slug"
+          "as": "playerRaw",
+          "ignoreCase": true,
+          "patterns": [
+            "<iframe[^>]+src=\"(https://[a-z0-9.]*pilavyerplay\\.top/assets/js/s\\.php\\?s=[^\"]+)\"",
+            "(data-pv=\"[^\"]+\"[^>]*>\\s*</div>\\s*<script[^>]*\\ssrc=\"https://[^\"/]+/assets/js/core\\.js)"
+          ]
         },
         {
-          "op": "set",
-          "value": "https://play2.pilavyerplay.top/assets/js/s.php?s={slug}",
+          "op": "replace",
+          "from": "playerRaw",
+          "pattern": "^data-pv=\"([^\"]+)\"[\\s\\S]*?src=\"(https://[^\"/]+)/assets/js/core\\.js$",
+          "with": "\\2/assets/js/s.php?s=\\1",
           "as": "playerUrl"
         },
         {
@@ -247,9 +287,33 @@
           "as": "masterUrl"
         },
         {
-          "op": "hls_audio",
+          "op": "http_get",
+          "url": "{masterUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "masterText"
+        },
+        {
+          "op": "regex",
+          "from": "masterText",
+          "group": 1,
+          "as": "audioUri",
+          "patterns": [
+            "#EXT-X-MEDIA:[^\\n]*TYPE=AUDIO[^\\n]*LANGUAGE=\"tr[^\"]*\"[^\\n]*URI=\"([^\"]+)\"",
+            "#EXT-X-MEDIA:[^\\n]*TYPE=AUDIO[^\\n]*URI=\"([^\"]+)\"[^\\n]*LANGUAGE=\"tr",
+            "^(?![\\s\\S]*#EXT-X-MEDIA:[^\\n]*LANGUAGE=)[\\s\\S]*?#EXT-X-MEDIA:[^\\n]*TYPE=AUDIO[^\\n]*URI=\"([^\"]+)\""
+          ]
+        },
+        {
+          "op": "replace",
           "from": "masterUrl",
-          "lang": "tr",
+          "pattern": "^(https?://[^?#]*/)[^/?#]*(?:\\?.*)?$",
+          "with": "\\1",
+          "as": "masterDir"
+        },
+        {
+          "op": "set",
+          "value": "{masterDir}{audioUri}",
           "as": "audioFinal"
         }
       ],
