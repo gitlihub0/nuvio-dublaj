@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "autoSearch": true,
+  "autoSearch": false,
   "providers": [
     {
-      "id": "fullhdfilmizlesene",
+      "id": "fullfilm",
       "enabled": true,
       "audioDelayMs": 0,
       "label": "Türkçe Dublaj · FullHD",
@@ -170,10 +170,96 @@
       "result": "audioFinal"
     },
     {
+      "id": "dizigom-dizi",
+      "enabled": true,
+      "audioDelayMs": 0,
+      "label": "Türkçe Dublaj · Dizigo",
+      "lang": "tr",
+      "base": "https://www.dizigom.news",
+      "audioHeaders": {
+        "Origin": "{base}",
+        "Referer": "{base}/"
+      },
+      "series": {
+        "queries": [
+          "{title}",
+          "{title_tmdb}"
+        ]
+      },
+      "search": {
+        "url": "{base}/ara?q={q}",
+        "maxCandidates": 1,
+        "pick": [
+          "href=\"(https://www\\.dizigom\\.news/diziler/[^\"/]+/?)\""
+        ]
+      },
+      "steps": [
+        {
+          "op": "regex",
+          "from": "page",
+          "pattern": "/diziler/([a-z0-9-]+?)(?:-izle)?/?$",
+          "group": 1,
+          "as": "seriesSlug"
+        },
+        {
+          "op": "set",
+          "value": "{base}/{seriesSlug}-{season}-sezon-{episode}-bolum/",
+          "as": "episodeUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{episodeUrl}",
+          "referer": "{page}",
+          "headers": {},
+          "as": "html"
+        },
+        {
+          "op": "regex",
+          "from": "html",
+          "pattern": "data-pv=\"([^\"]+)\"",
+          "group": 1,
+          "as": "slug"
+        },
+        {
+          "op": "set",
+          "value": "https://play2.pilavyerplay.top/assets/js/s.php?s={slug}",
+          "as": "playerUrl"
+        },
+        {
+          "op": "http_get",
+          "url": "{playerUrl}",
+          "referer": "{base}/",
+          "headers": {},
+          "as": "playerHtml"
+        },
+        {
+          "op": "regex",
+          "from": "playerHtml",
+          "pattern": "__PLAYER__\\s*=\\s*(\\{.*?\\})\\s*;?\\s*</script>",
+          "dotAll": true,
+          "group": 1,
+          "as": "playerJson"
+        },
+        {
+          "op": "json_path",
+          "from": "playerJson",
+          "path": "stream",
+          "as": "masterUrl"
+        },
+        {
+          "op": "hls_audio",
+          "from": "masterUrl",
+          "lang": "tr",
+          "as": "audioFinal"
+        }
+      ],
+      "result": "audioFinal"
+    },
+    {
       "id": "hdfilmcehennemi",
       "enabled": true,
       "audioDelayMs": 0,
-      "label": "Türkçe Dublaj · HDFilmCehennemi",
+      "label": "Türkçe Dublaj · HDFilmCeh",
       "lang": "tr",
       "base": "https://www.hdfilmcehennemi.nl",
       "audioHeaders": {
@@ -513,92 +599,6 @@
       "headers": {
         "X-Requested-With": "fetch"
       }
-    },
-    {
-      "id": "dizigom-dizi",
-      "enabled": true,
-      "audioDelayMs": 0,
-      "label": "Türkçe Dublaj · Dizigom",
-      "lang": "tr",
-      "base": "https://www.dizigom.news",
-      "audioHeaders": {
-        "Origin": "{base}",
-        "Referer": "{base}/"
-      },
-      "series": {
-        "queries": [
-          "{title}",
-          "{title_tmdb}"
-        ]
-      },
-      "search": {
-        "url": "{base}/ara?q={q}",
-        "maxCandidates": 1,
-        "pick": [
-          "href=\"(https://www\\.dizigom\\.news/diziler/[^\"/]+/?)\""
-        ]
-      },
-      "steps": [
-        {
-          "op": "regex",
-          "from": "page",
-          "pattern": "/diziler/([a-z0-9-]+?)(?:-izle)?/?$",
-          "group": 1,
-          "as": "seriesSlug"
-        },
-        {
-          "op": "set",
-          "value": "{base}/{seriesSlug}-{season}-sezon-{episode}-bolum/",
-          "as": "episodeUrl"
-        },
-        {
-          "op": "http_get",
-          "url": "{episodeUrl}",
-          "referer": "{page}",
-          "headers": {},
-          "as": "html"
-        },
-        {
-          "op": "regex",
-          "from": "html",
-          "pattern": "data-pv=\"([^\"]+)\"",
-          "group": 1,
-          "as": "slug"
-        },
-        {
-          "op": "set",
-          "value": "https://play2.pilavyerplay.top/assets/js/s.php?s={slug}",
-          "as": "playerUrl"
-        },
-        {
-          "op": "http_get",
-          "url": "{playerUrl}",
-          "referer": "{base}/",
-          "headers": {},
-          "as": "playerHtml"
-        },
-        {
-          "op": "regex",
-          "from": "playerHtml",
-          "pattern": "__PLAYER__\\s*=\\s*(\\{.*?\\})\\s*;?\\s*</script>",
-          "dotAll": true,
-          "group": 1,
-          "as": "playerJson"
-        },
-        {
-          "op": "json_path",
-          "from": "playerJson",
-          "path": "stream",
-          "as": "masterUrl"
-        },
-        {
-          "op": "hls_audio",
-          "from": "masterUrl",
-          "lang": "tr",
-          "as": "audioFinal"
-        }
-      ],
-      "result": "audioFinal"
     }
   ]
 }
