@@ -426,7 +426,7 @@
       "id": "hdfilmcehennemi-rapidrame",
       "enabled": true,
       "audioDelayMs": 0,
-      "label": "Türkçe Dublaj · HDFilmCehennemi (Rapidrame)",
+      "label": "Türkçe Dublaj · HDFilmCeh (R)",
       "lang": "tr",
       "base": "https://www.hdfilmcehennemi.nl",
       "audioHeaders": {
@@ -545,7 +545,7 @@
       "id": "hdfilmcehennemi-dizi",
       "enabled": true,
       "audioDelayMs": 0,
-      "label": "Türkçe Dublaj · HDFilmCehennemi",
+      "label": "Türkçe Dublaj · HDFilmCeh",
       "lang": "tr",
       "base": "https://www.hdfilmcehennemi.nl",
       "audioHeaders": {
